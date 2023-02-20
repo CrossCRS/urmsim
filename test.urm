@@ -1,0 +1,8 @@
+2,3,0       ; Pierwsza linijka zawiera stany startowe rejestrow
+            ; Komentarze poprzedzane srednikami
+J(2, 3, 5)  ; Wszystko za nawiasami moze byc komentarzem!
+S(1)
+S(3)
+J(1, 1, 1)
+Z(2)
+Z(3)
