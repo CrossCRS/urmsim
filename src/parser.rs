@@ -11,10 +11,10 @@ impl UrmParser {
     }
 
     pub fn parse(&self) -> Machine {
-        let mut registers: Vec<i32> = Vec::new();
+        let registers: Vec<i32> = Vec::new();
         let mut instructions: Vec<Instruction> = Vec::new();
 
-        for (i, line) in self.program_string.lines().enumerate() {
+        for line in self.program_string.lines() {
             // Cleanup line and remove comments
             let mut line_copy = line.replace(" ", "").trim().to_uppercase();
 
@@ -29,23 +29,10 @@ impl UrmParser {
                 continue;
             }
 
-            if i == 0 { // First line contains register values
-                for register in line_copy.split(',') {
-                    registers.push(register.parse().unwrap());
-                }
-            } else {
-                let instruction = self.parse_instruction(&mut line_copy);
-
-                // print!("Instruction: {}, args [", instruction.instruction_type.to_string());
-                // for arg in &instruction.args {
-                //     print!("{arg} ");
-                // }
-                // println!("]");
-                
-                instructions.push(instruction);
-            }
+            let instruction = self.parse_instruction(&mut line_copy);
+            instructions.push(instruction);
         }
-
+        
         return Machine::new(registers, instructions);
     }
 

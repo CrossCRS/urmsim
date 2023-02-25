@@ -58,6 +58,11 @@ impl Machine {
 
     /// Prints all the used register and their values in the form of a table
     pub fn print_registers(&self) {
+        if self.registers.is_empty() {
+            println!("All registers are empty.");
+            return;
+        }
+
         let mut headers: Vec<String> = Vec::new();
         for (i, _reg) in self.registers.iter().enumerate() {
             headers.push(format!("R{}", i + 1));
@@ -70,7 +75,6 @@ impl Machine {
 
         println!();
         println!("{table}");
-        println!();
     }
 
     /// Prints out a listing of all the loaded instructions
@@ -91,6 +95,10 @@ impl Machine {
     /// 
     /// * `r` - Register index (starting at 1)
     pub fn get_register(&self, r: usize) -> i32 {
+        if self.registers.len() < r {
+            return 0; // Default register value is 0
+        }
+
         return self.registers[r - 1];
     }
 
@@ -101,6 +109,10 @@ impl Machine {
     /// * `r` - Register index (starting at 1)
     /// * `value` - New value
     pub fn set_register(&mut self, r: usize, value: i32) {
+        if self.registers.len() < r {
+            self.registers.resize(r, 0);
+        }
+        
         self.registers[r - 1] = value;
     }
 
