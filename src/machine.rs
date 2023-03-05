@@ -122,6 +122,11 @@ impl Machine {
     /// 
     /// * `print_instruction` - If true, also prints the executed instruction in the format of INSTR_CODE(arguments)
     pub fn step(&mut self, print_instruction: bool) {
+        if self.program_counter >= self.instructions.len() {
+            println!("No instructions left");
+            return;
+        }
+        
         if print_instruction {
             println!("{}", &self.instructions[self.program_counter]);
         }
