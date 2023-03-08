@@ -89,6 +89,11 @@ impl Machine {
         return self.instructions.len();
     }
 
+    /// Returns current program counter value (starting at 1)
+    pub fn get_program_counter(&self) -> usize {
+        return self.program_counter + 1;
+    }
+
     /// Returns the value of register `r`
     /// 
     /// # Arguments
@@ -116,6 +121,20 @@ impl Machine {
         self.registers[r - 1] = value;
     }
 
+    /// Sets the program counter value to `pc`
+    /// 
+    /// # Arguments
+    /// 
+    /// * `pc` - New program counter value (starting at 1)
+    pub fn set_program_counter(&mut self, pc: usize) -> Result<usize, &'static str> {
+        if pc > self.instructions.len() || pc < 1 {
+            return Err("Invalid program counter value");
+        }
+
+        self.program_counter = pc - 1;
+        return Ok(self.get_program_counter());
+    }
+
     /// Runs a single instruction pointed at by the program counter
     /// 
     /// # Arguments
@@ -126,7 +145,7 @@ impl Machine {
             println!("No instructions left");
             return;
         }
-        
+
         if print_instruction {
             println!("{}", &self.instructions[self.program_counter]);
         }

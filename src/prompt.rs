@@ -14,9 +14,9 @@ impl Prompt {
         return Self { history: CmdHistory::default() };
     }
 
-    pub fn read(&mut self) -> io::Result<String> {
+    pub fn read(&mut self, pc: usize) -> io::Result<String> {
         return Input::<String>::with_theme(&ColorfulTheme::default())
-            .with_prompt("URMSim")
+            .with_prompt(format!("URMSim (PC: {})", pc))
             .history_with(&mut self.history)
             .interact_text();
     }

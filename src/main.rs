@@ -29,14 +29,30 @@ fn main() {
     println!();
 
     loop {
-        if let Ok(cmd) = prompt.read() {
+        if let Ok(cmd) = prompt.read(machine.get_program_counter()) {
             if cmd == "exit" {
                 process::exit(0);
             } else if cmd == "run" || cmd == "r" {
-                // TODO: Check if registers and display a warning?
+                // TODO: Check if registers are empty and display a warning?
                 println!("Ran {} steps", machine.run().bright_white().bold());
             } else if cmd == "step" || cmd == "s" {
                 machine.step(true);
+            } else if cmd.starts_with("pc") {
+                let mut args = cmd.split(" ");
+                let arg = args.nth(1);
+
+                if arg.is_some() {
+                    let pc = match arg.unwrap().parse::<usize>() {
+                        Ok(v) => v,
+                        Err(_) => break,
+                    };
+
+                    match machine.set_program_counter(pc) {
+                        Ok(_) => (),
+                        Err(e) => println!("Couldn't set program counter: {}", e),
+                    }
+                }
+                // TODO: :)
             } else if cmd.starts_with("registers") || cmd.starts_with("reg") {
                 let mut args = cmd.split(" ");
                 let mut arg = args.nth(1);
@@ -93,6 +109,8 @@ fn main() {
 fn print_help() {
     println!("{}\t\t\tShow this help screen", "(h)elp".bright_white().bold());
     println!("{}\t\t\tShow program instructions", "(l)ist".bright_white().bold());
+    println!("{}\t\t\tShow program counter value", "pc".bright_white().bold());
+    println!("{} {}\t\tSet program counter value", "pc".bright_white().bold(), "value");
     println!("{}\t\tShow registers content", "(reg)isters".bright_white().bold());
     println!("{} {}\t\tSet registers content (R1 = 0, R2 = y...)", "(reg)isters".bright_white().bold(), "x y");
     println!("{} {}\t\tSet registers content (Rx = y)", "(reg)isters".bright_white().bold(), "x=y");
