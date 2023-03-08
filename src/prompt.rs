@@ -11,7 +11,7 @@ impl Prompt {
         println!("{} {} (c) {}", "URMSim".bright_blue().bold(), env!("CARGO_PKG_VERSION"), "Norbert Budzynski 2023".bright_white().bold());
         println!();
 
-        return Self { history: CmdHistory::default() };
+        Self { history: CmdHistory::default() }
     }
 
     pub fn read(&mut self, pc: usize) -> io::Result<String> {

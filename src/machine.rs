@@ -2,10 +2,10 @@ use std::{str::FromStr, fmt::Display};
 use comfy_table::{Table, presets::UTF8_NO_BORDERS};
 
 pub enum InstructionType {
-    JUMP,
-    SUCCESSOR,
-    TRANSFER,
-    ZERO,
+    Jump,
+    Successor,
+    Transfer,
+    Zero,
 }
 
 impl FromStr for InstructionType {
@@ -13,10 +13,10 @@ impl FromStr for InstructionType {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "J" => Ok(Self::JUMP),
-            "S" => Ok(Self::SUCCESSOR),
-            "T" => Ok(Self::TRANSFER),
-            "Z" => Ok(Self::ZERO),
+            "J" => Ok(Self::Jump),
+            "S" => Ok(Self::Successor),
+            "T" => Ok(Self::Transfer),
+            "Z" => Ok(Self::Zero),
             _   => Err(()),
         }
     }
@@ -25,10 +25,10 @@ impl FromStr for InstructionType {
 impl Display for InstructionType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::JUMP => write!(f, "J"),
-            Self::SUCCESSOR => write!(f, "S"),
-            Self::TRANSFER => write!(f, "T"),
-            Self::ZERO => write!(f, "Z"),
+            Self::Jump => write!(f, "J"),
+            Self::Successor => write!(f, "S"),
+            Self::Transfer => write!(f, "T"),
+            Self::Zero => write!(f, "Z"),
         }
     }
 }
@@ -41,7 +41,7 @@ pub struct Instruction {
 impl Display for Instruction {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let args_str = self.args.iter().map(|x| x.to_string()).collect::<Vec<_>>().join(",");
-        return write!(f, "{}({})", self.instruction_type, args_str);
+        write!(f, "{}({})", self.instruction_type, args_str)
     }
 }
 
@@ -53,7 +53,7 @@ pub struct Machine {
 
 impl Machine {
     pub fn new(registers: Vec<i32>, instructions: Vec<Instruction>) -> Self {
-        return Self { registers, instructions, program_counter: 0 };
+        Self { registers, instructions, program_counter: 0 }
     }
 
     /// Prints all the used register and their values in the form of a table
@@ -86,12 +86,12 @@ impl Machine {
 
     /// Returns total count of loaded instructions
     pub fn get_instruction_count(&self) -> usize {
-        return self.instructions.len();
+        self.instructions.len()
     }
 
     /// Returns current program counter value (starting at 1)
     pub fn get_program_counter(&self) -> usize {
-        return self.program_counter + 1;
+        self.program_counter + 1
     }
 
     /// Returns the value of register `r`
@@ -104,7 +104,7 @@ impl Machine {
             return 0; // Default register value is 0
         }
 
-        return self.registers[r - 1];
+        self.registers[r - 1]
     }
 
     /// Sets the value of register `r` to `value`
@@ -132,7 +132,8 @@ impl Machine {
         }
 
         self.program_counter = pc - 1;
-        return Ok(self.get_program_counter());
+        
+        Ok(self.get_program_counter())
     }
 
     /// Runs a single instruction pointed at by the program counter
@@ -152,7 +153,7 @@ impl Machine {
 
         let instruction = &self.instructions[self.program_counter];
         match instruction.instruction_type {
-            InstructionType::JUMP => {
+            InstructionType::Jump => {
                 // J(m, n, i) = jump to instruction i if reg[m] == reg[n]
                 if self.get_register(instruction.args[0] as usize) == self.get_register(instruction.args[1] as usize) {
                     self.program_counter = (instruction.args[2] as usize) - 1;
@@ -160,17 +161,17 @@ impl Machine {
                     self.program_counter += 1;
                 }
             },
-            InstructionType::SUCCESSOR => {
+            InstructionType::Successor => {
                 // S(m) = increment reg[m]
                 self.set_register(instruction.args[0] as usize, self.get_register(instruction.args[0] as usize) + 1);
                 self.program_counter += 1;
             },
-            InstructionType::TRANSFER => {
+            InstructionType::Transfer => {
                 // T(m, n) = copy from reg[m] to reg[n]
                 self.set_register(instruction.args[1] as usize, self.get_register(instruction.args[0] as usize));
                 self.program_counter += 1;
             },
-            InstructionType::ZERO => {
+            InstructionType::Zero => {
                 // Z(m) = zero reg[m]
                 self.set_register(instruction.args[0] as usize, 0);
                 self.program_counter += 1;
@@ -185,6 +186,7 @@ impl Machine {
             self.step(false);
             counter += 1;
         }
-        return counter;
+
+        counter
     }
 }
