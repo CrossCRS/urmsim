@@ -30,6 +30,8 @@ fn setup_commands(commands: &mut HashMap<&str, fn(&mut Machine, Vec<&str>)>) {
     commands.insert("registers", cmd_registers);
     commands.insert("reg", cmd_registers);
 
+    commands.insert("reset", cmd_reset);
+
     commands.insert("run", cmd_run);
     commands.insert("r", cmd_run);
 
@@ -89,6 +91,7 @@ fn cmd_help(_machine: &mut Machine, _args: Vec<&str>) {
     println!("{}\t\tShow registers content", "(reg)isters".bright_white().bold());
     println!("{} x y\t\tSet registers content (R1 = 0, R2 = y...)", "(reg)isters".bright_white().bold());
     println!("{} x=y\t\tSet registers content (Rx = y)", "(reg)isters".bright_white().bold());
+    println!("{}\t\t\tResets program counter and registers", "reset".bright_white().bold());
     println!("{}\t\t\tRun the whole program", "(r)un".bright_white().bold());
     println!("{}\t\t\tRun a single instruction", "(s)tep".bright_white().bold());
 }
@@ -149,6 +152,10 @@ fn cmd_registers(machine: &mut Machine, args: Vec<&str>) {
     }
 
     machine.print_registers();
+}
+
+fn cmd_reset(machine: &mut Machine, _args: Vec<&str>) {
+    machine.reset();
 }
 
 /// Run all remaining instructions

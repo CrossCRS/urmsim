@@ -84,6 +84,12 @@ impl Machine {
         }
     }
 
+    /// Resets program counter and registers
+    pub fn reset(&mut self) {
+        self.registers.clear();
+        self.program_counter = 0;
+    }
+
     /// Returns total count of loaded instructions
     pub fn get_instruction_count(&self) -> usize {
         self.instructions.len()
